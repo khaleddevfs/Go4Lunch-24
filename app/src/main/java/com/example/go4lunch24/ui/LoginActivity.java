@@ -3,21 +3,18 @@ package com.example.go4lunch24.ui;
 
 
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
+
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+
 import com.example.go4lunch24.databinding.ActivityLoginBinding;
 import com.example.go4lunch24.viewModel.LoginViewModel;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -34,7 +31,14 @@ public class LoginActivity extends AppCompatActivity {
         
         initView();
 
+
+        // Obtention de l'instance du ViewModel
+        viewModel = new ViewModelProvider(this).get(LoginViewModel.class);
+
+
         initListener();
+
+
 
     }
 
@@ -53,6 +57,14 @@ public class LoginActivity extends AppCompatActivity {
         loginBinding.twitterLoginButton.setOnClickListener(v -> viewModel.startLoginActivityTwitter(LoginActivity.this));
     }
 
+
+    private void checkSessionUser() {
+        //viewModel.updateCurrentUser();
+        if (viewModel.isCurrentUserLogged()) {
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+        }
+    }
 
 
 

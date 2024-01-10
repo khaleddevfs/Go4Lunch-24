@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.example.go4lunch24" />
+                  <option name="mobileSdkAppId" value="1:846654757565:android:3e200bd9b68853324435d4" />
+                  <option name="projectId" value="go4lunch-7eacb" />
+                  <option name="projectNumber" value="846654757565" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

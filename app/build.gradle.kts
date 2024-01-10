@@ -88,5 +88,10 @@ dependencies {
     androidTestImplementation ("junit:junit:4.13.2")
     androidTestImplementation ("junit:junit:4.13.2")
 
+    // RxJAVA2
+    implementation ("io.reactivex.rxjava2:rxandroid:2.1.1")
+    implementation ("io.reactivex.rxjava2:rxjava:2.2.21")
+    implementation ("com.squareup.retrofit2:adapter-rxjava2:2.9.0")
+
 
 }

@@ -2,15 +2,16 @@ package com.example.go4lunch24.ui;
 
 
 
+
+
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
+
 import android.content.Intent;
-import android.content.pm.PackageInfo;
+
 import android.content.pm.PackageManager;
-import android.content.pm.Signature;
-import android.os.Build;
+
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -38,7 +39,7 @@ import com.example.go4lunch24.fragments.ListRestFragment;
 import com.example.go4lunch24.fragments.MapsFragment;
 import com.example.go4lunch24.fragments.WorkmatesFragment;
 import com.example.go4lunch24.viewModel.MainViewModel;
-import com.google.android.libraries.places.api.Places;
+
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.widget.Autocomplete;
@@ -47,8 +48,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -57,8 +57,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private ActivityMainBinding binding;
 
-    private MainViewModel viewModel;
 
+    private MainViewModel viewModel;
 
     private int AUTOCOMPLETE_REQUEST_CODE = 1;
 
@@ -74,34 +74,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
 
 
-        try {
-            PackageInfo info = getPackageManager().getPackageInfo(
-                    "com.example.go4lunch24", // Remplacez ceci par le nom de votre package
-                    PackageManager.GET_SIGNATURES);
-
-            for (Signature signature : info.signatures) {
-                MessageDigest md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                byte[] hashKey = md.digest();
-
-                // Conversion du tableau de bytes en une chaîne hexadécimale
-                StringBuilder hashKeyStringBuilder = new StringBuilder();
-                for (byte b : hashKey) {
-                    hashKeyStringBuilder.append(String.format("%02x", b));
-                }
-
-                String hashKeyString = hashKeyStringBuilder.toString();
-                System.out.println("Clé de hachage SHA-1 : " + hashKeyString);
-            }
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
 
 
+        viewModel = new ViewModelProvider(this).get(MainViewModel.class);
 
-        requestMultiplePermissions();
+
+       // requestMultiplePermissions();
 
         initView();
 
@@ -209,33 +187,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void configureBottomView() {
 
+        binding.mainBottomNavigationView.setOnNavigationItemReselectedListener(item -> onBottomNavigation(item.getItemId()));
 
     }
 
 
-/*
+
+    @SuppressLint("NonConstantResourceId")
     public boolean onBottomNavigation(int itemId) {
-        Fragment selectedFragment = null;
-
-        switch (itemId) {
-            case R.id.bottom_navigation_menu_map_button:
-                selectedFragment = new MapsFragment();
-                break;
-            case R.id.bottom_navigation_menu_list_button:
-                selectedFragment = new ListRestFragment();
-                break;
-            case R.id.bottom_navigation_menu_workMates_button:
-                selectedFragment = new WorkmatesFragment();
-                break;
-        }
-
-        if (selectedFragment != null) {
-            MainActivity.this
-                    .getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.main_frame_layout, selectedFragment)
-                    .commit();
-        }
 
 
         return true;
@@ -301,25 +260,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void configureNotifications() {
-        this.createNotificationChannel();
+
         this.configureNotificationIntent();
         this.enableNotification();
     }
 
 
-    // NOTIFICATION ALARM MANAGER
-    private void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            String channelId = getString(R.string.notificationChannel);
-            CharSequence name = getString(R.string.name_channel);
-            String description = getString(R.string.description_channel);
-            int importance = NotificationManager.IMPORTANCE_HIGH;
-            NotificationChannel channel = new NotificationChannel(channelId, name, importance);
-            channel.setDescription(description);
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
-    }
 
     private void configureNotificationIntent() {
     } // A completer
@@ -353,8 +299,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         this.binding.mainDrawerLayout.closeDrawer(GravityCompat.START);
         */
-
-
+        return true;
+    }
 
 
 
@@ -366,8 +312,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        return false;
-    }
+
 }

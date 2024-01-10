@@ -1,7 +1,7 @@
 package com.example.go4lunch24.viewModel;
 
 import android.app.Activity;
-import android.util.Log;
+
 
 
 import com.firebase.ui.auth.AuthUI;
