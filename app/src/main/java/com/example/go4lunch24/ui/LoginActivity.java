@@ -3,6 +3,9 @@ package com.example.go4lunch24.ui;
 
 
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -12,6 +15,9 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.go4lunch24.databinding.ActivityLoginBinding;
 import com.example.go4lunch24.viewModel.LoginViewModel;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -30,10 +36,6 @@ public class LoginActivity extends AppCompatActivity {
 
         initListener();
 
-
-
-        checkSessionUser();
-        
     }
 
 
@@ -54,14 +56,6 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-
-    private void checkSessionUser() {
-        viewModel.updateCurrentUser();
-        if (viewModel.isCurrentUserLogged()) {
-            startActivity(new Intent(this, MainActivity.class));
-            finish();
-        }
-    }
 
 
     @Override
