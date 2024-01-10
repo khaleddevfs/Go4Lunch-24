@@ -6,6 +6,7 @@ import android.content.Intent;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -22,6 +23,8 @@ public class LoginActivity extends AppCompatActivity {
     private ActivityLoginBinding loginBinding;
 
     private LoginViewModel viewModel;
+
+    public static final int RC_SIGN_IN = 100;
 
     
 
@@ -73,6 +76,15 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == RC_SIGN_IN) {
+            if (resultCode == RESULT_OK) {
+                //viewModel.updateCurrentUser();
+                Intent loginIntent = new Intent(this, MainActivity.class);
+                startActivity(loginIntent);
+            } else {
+                Toast.makeText(this, "marche pas ", Toast.LENGTH_SHORT).show();
+            }
+        }
 
     }
 }
