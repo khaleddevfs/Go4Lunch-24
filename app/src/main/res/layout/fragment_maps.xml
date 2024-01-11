@@ -11,7 +11,8 @@
     <com.google.android.gms.maps.MapView
         android:id="@+id/mapView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:apiKey="AIzaSyCUQ6ZAN-jgApdUhF1kEz2QdvGs_Y5hVrc"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

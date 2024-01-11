@@ -1,10 +1,13 @@
 package com.example.go4lunch24.fragments;
 
 
-
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.location.Location;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,12 +16,17 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 
 import com.example.go4lunch24.R;
 import com.example.go4lunch24.databinding.FragmentMapsBinding;
+import com.example.go4lunch24.models.Location;
 import com.example.go4lunch24.viewModel.MapsViewModel;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -27,12 +35,17 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.Executor;
 
 import pub.devrel.easypermissions.EasyPermissions;
 
-public class MapsFragment extends BaseFragment implements OnMapReadyCallback, EasyPermissions.PermissionCallbacks {
+public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
 
     private FragmentMapsBinding binding;
 
@@ -45,6 +58,8 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback, Ea
     private Location userLocation;
 
 
+    private FusedLocationProviderClient fusedLocationClient;
+    private static final int REQUEST_CODE_PERMISSION = 123;
 
 
     @Nullable
@@ -52,9 +67,17 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback, Ea
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentMapsBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
+
+        checkAndRequestLocationPermission();
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
+
         configureFragmentOnCreateView(view);
         configureMapView(savedInstanceState);
         return view;
+    }
+
+    private void checkAndRequestLocationPermission() {
     }
 
     private void configureMapView(Bundle savedInstanceState) {
@@ -87,7 +110,6 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback, Ea
         mapView.onLowMemory();
     }
 
-    @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
@@ -98,25 +120,76 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback, Ea
     }
 
     @Override
-        public void onMapReady(GoogleMap googleMap) {
-            this.googleMap = googleMap;
-            googleMap.setIndoorEnabled(false);
-            updateLocationUI();
-            googleMap.setOnCameraMoveListener(this::onMarkerClick);
-        }
+    public void onMapReady(GoogleMap map) {
+        googleMap = map;
+
+        updateLocationUI();
+
+
+    }
 
     private void updateLocationUI() {
-        try {
-            if (userLocation !=null) {
-                googleMap.setMyLocationEnabled(true);
-                googleMap.getUiSettings().setMyLocationButtonEnabled(true);
-                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()), 16));
-            }
-        } catch (SecurityException e) {
-            Log.e("Exception:", e.getMessage());
+        // Vérifier si la permission ACCESS_FINE_LOCATION est accordée
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            // La permission est déjà accordée, vous pouvez maintenant demander la localisation
+            getLastLocation();
+        } else {
+            // Demander la permission à l'utilisateur
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_PERMISSION);
         }
+    }
 
-        Log.d("location update", "update UI");
+    // Gérer la réponse de l'utilisateur à la demande de permission
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_CODE_PERMISSION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // L'utilisateur a accordé la permission, vous pouvez maintenant demander la localisation
+                getLastLocation();
+            } else {
+                // L'utilisateur a refusé la permission, gérer cela en conséquence
+                // Vous pourriez afficher un message à l'utilisateur indiquant que la localisation est nécessaire pour une fonctionnalité spécifique, etc.
+            }
+        }
+    }
+
+
+    private void getLocationUser() {
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(requireActivity(), new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        if (location != null) {
+                            double latitude = location.getLatitude();
+                            double longitude = location.getLongitude();
+
+                            // Utiliser le géocodage inverse pour obtenir l'adresse
+                            Geocoder geocoder = new Geocoder(requireContext(), Locale.getDefault());
+
+                            try {
+                                List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+                                if (addresses != null && addresses.size() > 0) {
+                                    Address address = addresses.get(0);
+                                    String userAddress = address.getAddressLine(0);
+
+                                    // Ajouter un marqueur sur la carte à la localisation de l'utilisateur
+                                    LatLng userLocation = new LatLng(latitude, longitude);
+                                    googleMap.addMarker(new MarkerOptions().position(userLocation).title("Utilisateur").snippet(userAddress));
+                                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(userLocation));
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                })
+                .addOnFailureListener( requireActivity(), new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Gestion des erreurs lors de la récupération de la localisation
+                        e.printStackTrace();
+                    }
+                });
 
     }
     @SuppressLint("PotentialBehaviorOverride")
@@ -130,56 +203,8 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback, Ea
 
 
 
-  /*  @Override
-    public void getLocationUser(Location locationUser) {
-        userLocation = locationUser;
-        viewModel.fetchWorkMatesGoing();
-        viewModel.workMatesIdMutableLiveData.observe(getViewLifecycleOwner(), workMatesIds -> {
-            Log.d("userloca", "location ok" + locationUser);
-            viewModel.getRestaurantList(locationUser.getLatitude(), locationUser.getLongitude())
-                    .observe(getViewLifecycleOwner(), restaurants -> {
-                        Log.d("userloca", "location ok" + restaurants.size());
-                        setMapMarkers(restaurants, workMatesIds);
-
-                        if (googleMap != null) {
-                            googleMap.animateCamera(CameraUpdateFactory
-                                    .newLatLngZoom(new LatLng(locationUser.getLatitude(), locationUser.getLongitude()), 16));
-                        }
-                    });
-        });
-    }
-
-   */
 
 
- /* @Override
-    public void getLocationUser(Location locationUser) {
-        userLocation = locationUser;
-        viewModel.fetchWorkMatesGoing();
-        viewModel.workMatesIdMutableLiveData
-                .observe(getViewLifecycleOwner(), workMatesIds -> {
-                    Log.d("userloca", "location ok" + locationUser);
-                    viewModel.getRestaurantList(locationUser.getLatitude(), locationUser.getLongitude())
-                            .observe(getViewLifecycleOwner(), restaurants -> {
-                                Log.d("userloca", "location ok" + restaurants.size());
-
-                                setMapMarkers(restaurants, workMatesIds);
-                            });
-
-                });
-        if (googleMap != null) {
-            googleMap.animateCamera(CameraUpdateFactory
-                    .newLatLngZoom(new LatLng(locationUser.getLatitude(), locationUser.getLongitude()), 16));
-        }
-    }
-
-  */
-
-
-    @Override
-    public void getLocationUser(Location location) {
-
-    }
 
 
 
@@ -188,25 +213,7 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback, Ea
 
     
 
-   /* private void setMapMarkers(List<Restaurant> restaurants, List<String> workMatesIds) {
-        if (googleMap != null) {
-            googleMap.clear();
 
-            for (Restaurant restaurant : restaurants) {
-                int iconResource = (workMatesIds.contains(restaurant.getRestaurantID())) ?
-                        R.drawable.icon_location_selected : R.drawable.icon_location_normal;
-                LatLng positionRestaurant = new LatLng(restaurant.getLatitude(), restaurant.getLongitude());
-                googleMap.addMarker(new MarkerOptions()
-                        .position(positionRestaurant)
-                        .icon(BitmapDescriptorFactory.fromResource(iconResource))
-                        .title(restaurant.getName()))
-                        .setTag(restaurant.getRestaurantID());
-                onMarkerClick();
-            }
-        }
-    }
-
-    */
 
     @Override
     protected void configureFragmentOnCreateView(View view) {
