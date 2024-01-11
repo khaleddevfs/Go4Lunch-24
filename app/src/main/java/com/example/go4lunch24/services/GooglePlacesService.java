@@ -2,6 +2,9 @@ package com.example.go4lunch24.services;
 
 
 
+import com.example.go4lunch24.models.DetailsRestaurantResponseApi;
+import com.example.go4lunch24.models.RestaurantResponseApi;
+
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
@@ -13,7 +16,7 @@ public interface GooglePlacesService {
     String MAX_WIDTH_GOOGLE = "&maxwidth=";
     String KEY_GOOGLE = "&key=";
 
-/*
+
     @GET("nearbysearch/json")
     Call<RestaurantResponseApi> getNeatByPlaces (
             @Query("key") String key,
@@ -28,5 +31,5 @@ public interface GooglePlacesService {
             @Query("place_id") String pPlaceId,
             @Query("fields") String pFields);
 
- */
+
 }

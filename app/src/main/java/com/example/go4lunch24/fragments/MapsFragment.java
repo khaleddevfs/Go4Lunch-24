@@ -23,6 +23,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.go4lunch24.R;
 import com.example.go4lunch24.databinding.FragmentMapsBinding;
+import com.example.go4lunch24.factory.Go4LunchFactory;
+import com.example.go4lunch24.injections.Injection;
 import com.example.go4lunch24.models.Location;
 import com.example.go4lunch24.viewModel.MapsViewModel;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -55,7 +57,7 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
 
     private MapView mapView;
 
-    private Location userLocation;
+    private Location location;
 
 
     private FusedLocationProviderClient fusedLocationClient;
@@ -202,24 +204,26 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback {
     }
 
 
-
-
-
-
-
-
-
-
-
-    
-
-
-
     @Override
-    protected void configureFragmentOnCreateView(View view) {
+    public void getLocationUser(Location locationUser) {
+        location = locationUser;
+        viewModel.fetchWorkMateGoing()
+
 
     }
 
+    @Override
+    protected void configureFragmentOnCreateView(View view) {
+        viewModel = obtainViewModel();
+
+
+
+    }
+
+    private MapsViewModel obtainViewModel() {
+        Go4LunchFactory viewModelFactory = Injection.provideViewModelFactory();
+        return new ViewModelProvider(requireActivity(), viewModelFactory).get(MapsViewModel.class);
+    }
 
 
 

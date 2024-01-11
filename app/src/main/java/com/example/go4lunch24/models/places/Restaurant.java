@@ -1,6 +1,6 @@
 package com.example.go4lunch24.models.places;
 
-import com.example.mygo4lunch.models.common.Location;
+import com.example.go4lunch24.models.Location;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 

@@ -1,6 +1,7 @@
 package com.example.go4lunch24.models;
 
-import com.example.mygo4lunch.models.details.OpeningHours;
+
+import com.example.go4lunch24.models.details.OpeningHours;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -58,7 +59,7 @@ public class RestaurantApi {
         return vicinity;
     }
 
-    public OpeningHours getOpeningHours() {
+    public  OpeningHours getOpeningHours() {
         return openingHours;
     }
 
