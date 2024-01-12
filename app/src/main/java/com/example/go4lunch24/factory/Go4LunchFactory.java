@@ -10,7 +10,7 @@ import com.example.go4lunch24.repositories.WorkMatesRepository;
 import com.example.go4lunch24.viewModel.LoginViewModel;
 import com.example.go4lunch24.viewModel.MainViewModel;
 import com.example.go4lunch24.viewModel.MapsViewModel;
-import com.example.go4lunch24.viewModel.RestaurantDetailsViewModel;
+import com.example.go4lunch24.viewModel.RestaurantDetailViewModel;
 import com.example.go4lunch24.viewModel.RestaurantViewModel;
 import com.example.go4lunch24.viewModel.SettingsViewModel;
 import com.example.go4lunch24.viewModel.WorkMateViewModel;
@@ -56,8 +56,8 @@ public class Go4LunchFactory implements ViewModelProvider.Factory {
             return (T) new RestaurantViewModel(restaurantRepository, workmatesRepository);
         }
 
-        if (modelClass.isAssignableFrom(RestaurantDetailsViewModel.class)) {
-            return (T) new RestaurantDetailsViewModel(restaurantRepository, workmatesRepository);
+        if (modelClass.isAssignableFrom(RestaurantDetailViewModel.class)) {
+            return (T) new RestaurantDetailViewModel(restaurantRepository, workmatesRepository);
         }
 
         if (modelClass.isAssignableFrom(WorkMateViewModel.class)) {

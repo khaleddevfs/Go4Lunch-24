@@ -13,9 +13,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RestaurantDetailsViewModel extends BaseViewModel {
+public class RestaurantDetailViewModel extends BaseViewModel {
 
-    private final String TAG = RestaurantDetailsViewModel.class.getSimpleName();
+    private final String TAG = RestaurantDetailViewModel.class.getSimpleName();
 
     private final RestaurantRepository restaurantRepository;
 
@@ -28,7 +28,7 @@ public class RestaurantDetailsViewModel extends BaseViewModel {
 
     public MutableLiveData<Boolean> isRestaurantPicked = new MutableLiveData<>();
 
-    public RestaurantDetailsViewModel(RestaurantRepository restaurantRepository, WorkMatesRepository workmatesRepository) {
+    public RestaurantDetailViewModel(RestaurantRepository restaurantRepository, WorkMatesRepository workmatesRepository) {
         this.restaurantRepository = restaurantRepository;
         this.workmatesRepository = workmatesRepository;
 

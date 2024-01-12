@@ -2,7 +2,6 @@
     <string name="app_name">Go4Lunch 24</string>
 
 
-
     // SIGNIN LAYOUT
     <string name="logo_go_4_lunch" translatable="false" />
     <string name="sign_in_second_title">Find a nice restaurant and invite your co-workers for lunch!</string>
@@ -79,7 +78,6 @@
     <string name="name_channel" translatable="false">Go4Lunch channel</string>
     <string name="description_channel" translatable="false">Notification channel</string>
     <string name="no" translatable="false" />
-
 
 
     //Added
