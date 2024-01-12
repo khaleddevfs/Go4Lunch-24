@@ -7,14 +7,14 @@ import com.example.go4lunch24.repositories.SaveDataRepository;
 import com.example.go4lunch24.repositories.WorkMatesRepository;
 
 
-public class SettingsViewModel extends BaseViewModel {
+public class SettingViewModel extends BaseViewModel {
 
     private final SaveDataRepository saveDataRepository;
 
     private final WorkMate workMate;
 
 
-    public SettingsViewModel(SaveDataRepository saveDataRepository, WorkMatesRepository workmatesRepository) {
+    public SettingViewModel(SaveDataRepository saveDataRepository, WorkMatesRepository workmatesRepository) {
         this.saveDataRepository = saveDataRepository;
         this.workmatesRepository = workmatesRepository;
         workMate = workmatesRepository.getActualUser();

@@ -2,6 +2,7 @@ package com.example.go4lunch24.viewModel;
 
 import android.util.Log;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.go4lunch24.models.Restaurant;
@@ -36,6 +37,10 @@ public class RestaurantDetailViewModel extends BaseViewModel {
     }
 
 
+
+    public LiveData<Restaurant> getRestaurantDetail(String placeId) {
+        return restaurantRepository.getGoogleRestaurantDetail(placeId);
+    }
 
     public void fetchInfoRestaurant(Restaurant restaurant){
         this.restaurant = restaurant;

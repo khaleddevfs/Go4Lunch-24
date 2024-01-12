@@ -128,14 +128,14 @@
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/coworkersRecyclerView"
+        android:id="@+id/workMatesRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/middle_bar"
-        tools:listitem="@layout/fragment_coworkers_layout" />
+        tools:listitem="@layout/fragment_workmates" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

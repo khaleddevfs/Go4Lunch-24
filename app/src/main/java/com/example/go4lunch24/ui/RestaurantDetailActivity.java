@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.go4lunch24.R;
+import com.example.go4lunch24.adapters.WorkMateDetailAdapter;
 import com.example.go4lunch24.databinding.ActivityRestaurantDetailBinding;
 import com.example.go4lunch24.factory.Go4LunchFactory;
 import com.example.go4lunch24.injections.Injection;
@@ -70,7 +71,7 @@ public class RestaurantDetailActivity extends AppCompatActivity {
         if (getIntent().hasExtra(RESTAURANT_PLACE_ID)) {
             String placeId = getIntent().getStringExtra(RESTAURANT_PLACE_ID);
             getRestaurantDetail(placeId);
-            initCoworkersList();
+            initWorkMatesList();
         }
     }
 
@@ -94,12 +95,12 @@ public class RestaurantDetailActivity extends AppCompatActivity {
         viewModel.fetchWorkMateLike(restaurant);
     }
 
-    private void initCoworkersList() {
-        CoworkerDetailAdapter coworkerDetailAdapter = new CoworkerDetailAdapter();
-        binding.coworkersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        binding.coworkersRecyclerView.setAdapter(coworkerDetailAdapter);
+    private void initWorkMatesList() {
+        WorkMateDetailAdapter workMateDetailAdapter = new WorkMateDetailAdapter();
+        binding.workMatesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        binding.workMatesRecyclerView.setAdapter(workMateDetailAdapter);
 
-        viewModel.mCoworkerList.observe(this, coworkerDetailAdapter::setCoworkerLists);
+        viewModel.mWorkMateList.observe(this, workMateDetailAdapter::setWorkMateList);
         viewModel.isRestaurantLiked.observe(this, this::changeLikeStatus);
         viewModel.isRestaurantPicked.observe(this, this::changeChoiceStatus);
     }

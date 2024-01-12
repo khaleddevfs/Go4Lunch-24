@@ -4,6 +4,8 @@ package com.example.go4lunch24.ui;
 
 
 
+import static com.example.go4lunch24.ui.RestaurantDetailActivity.RESTAURANT_PLACE_ID;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 
@@ -164,8 +166,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @SuppressLint("WrongConstant")
     public boolean onBottomNavigation(int itemId) {
-      /*  Fragment selectedFragment = null;
-
+        Fragment selectedFragment = null;
+/*
         switch (itemId) {
             case R.id.bottom_navigation_menu_map_button:
                 selectedFragment = new MapsFragment();
@@ -186,7 +188,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .commit();
         }
 
-       */
+ */
+
+
         return true;
 
     }
@@ -246,18 +250,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-    /*    int id = item.getItemId();
-        switch (id) {
+        int id = item.getItemId();
+      /*  switch (id) {
             case R.id.drawer_menu_lunch_button:
                 if (selectedRestaurantId != null){
-                    Intent intent = new Intent(MainActivity.this, RestaurantDetailsActivity.class);
+                    Intent intent = new Intent(MainActivity.this, RestaurantDetailActivity.class);
                     intent.putExtra(RESTAURANT_PLACE_ID, selectedRestaurantId);
                     startActivity(intent);
                 }
                 break;
 
             case R.id.drawer_menu_settings_button:
-                startActivity(new Intent(this, SettingsActivity.class));
+                startActivity(new Intent(this, SettingActivity.class));
                 Log.d("setting activity ok", "setting on");
                 break;
 
@@ -268,7 +272,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
         }
         this.binding.mainDrawerLayout.closeDrawer(GravityCompat.START);
-        */
+
+       */
+
         return true;
     }
 
