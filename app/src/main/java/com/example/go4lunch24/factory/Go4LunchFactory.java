@@ -1,5 +1,6 @@
 package com.example.go4lunch24.factory;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -32,9 +33,10 @@ public class Go4LunchFactory implements ViewModelProvider.Factory {
 
     }
 
-
+    @SuppressWarnings("unchecked")
+    @NonNull
+    @Override
     public <T extends ViewModel> T create(Class<T> modelClass) {
-
         if (modelClass.isAssignableFrom(LoginViewModel.class)) {
             return (T) new LoginViewModel (workmatesRepository);
         }

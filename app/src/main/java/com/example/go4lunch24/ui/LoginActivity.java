@@ -13,10 +13,12 @@ import androidx.lifecycle.ViewModelProvider;
 
 
 import com.example.go4lunch24.databinding.ActivityLoginBinding;
+import com.example.go4lunch24.factory.Go4LunchFactory;
+import com.example.go4lunch24.injections.Injection;
 import com.example.go4lunch24.viewModel.LoginViewModel;
 
 
-
+import static com.example.go4lunch24.viewModel.LoginViewModel.RC_SIGN_IN;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -24,7 +26,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private LoginViewModel viewModel;
 
-    public static final int RC_SIGN_IN = 100;
+
 
     
 
@@ -34,12 +36,11 @@ public class LoginActivity extends AppCompatActivity {
         
         initView();
 
-
-        // Obtention de l'instance du ViewModel
-        viewModel = new ViewModelProvider(this).get(LoginViewModel.class);
-
-
         initListener();
+
+        viewModel = obtainViewModel();
+
+        checkSessionUser();
 
 
 
@@ -60,9 +61,14 @@ public class LoginActivity extends AppCompatActivity {
         loginBinding.twitterLoginButton.setOnClickListener(v -> viewModel.startLoginActivityTwitter(LoginActivity.this));
     }
 
+    private LoginViewModel obtainViewModel() {
+        Go4LunchFactory viewModelFactory = Injection.provideViewModelFactory();
+        return new ViewModelProvider(this, viewModelFactory).get(LoginViewModel.class);
+    }
+
 
     private void checkSessionUser() {
-        //viewModel.updateCurrentUser();
+        viewModel.updateCurrentUser();
         if (viewModel.isCurrentUserLogged()) {
             startActivity(new Intent(this, MainActivity.class));
             finish();
@@ -71,14 +77,12 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
-                //viewModel.updateCurrentUser();
+                viewModel.updateCurrentUser();
                 Intent loginIntent = new Intent(this, MainActivity.class);
                 startActivity(loginIntent);
             } else {

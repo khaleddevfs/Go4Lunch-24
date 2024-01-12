@@ -7,9 +7,11 @@ package com.example.go4lunch24.ui;
 import android.Manifest;
 import android.annotation.SuppressLint;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 
-import android.content.pm.PackageManager;
+
 
 
 import android.os.Bundle;
@@ -25,21 +27,24 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.example.go4lunch24.R;
 import com.example.go4lunch24.databinding.ActivityMainBinding;
+
+import com.example.go4lunch24.factory.Go4LunchFactory;
 import com.example.go4lunch24.fragments.ListRestFragment;
 import com.example.go4lunch24.fragments.MapsFragment;
 import com.example.go4lunch24.fragments.WorkmatesFragment;
+import com.example.go4lunch24.injections.Injection;
 import com.example.go4lunch24.viewModel.MainViewModel;
 
+import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.widget.Autocomplete;
@@ -49,7 +54,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 
-import java.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -60,10 +65,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private MainViewModel viewModel;
 
+
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+
     private int AUTOCOMPLETE_REQUEST_CODE = 1;
 
 
-    private static final int MULTIPLE_PERMISSIONS_REQUEST_CODE = 1;
+
 
 
     private String selectedRestaurantId;
@@ -73,23 +81,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-
-
-        viewModel = new ViewModelProvider(this).get(MainViewModel.class);
-
-
-       // requestMultiplePermissions();
-
         initView();
-
-
-
+        viewModel = obtainViewModel();
         configureUI();
-
-
-
-
 
         // changing Action bar Title
 
@@ -99,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             actionBar.setTitle(R.string.hungry);
         }
 
-        //  Places.initialize(getApplicationContext(), getString(R.string.MAPS_API_KEY));
+      Places.initialize(getApplicationContext(), getString(R.string.MAPS_API_KEY));
 
 
         // connecting MapsFragment with activity
@@ -110,44 +104,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .commit();
     }
 
-    private void requestMultiplePermissions() {
-        String[] permissions = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.INTERNET, Manifest.permission.ACCESS_WIFI_STATE};
-        List<String> permissionsNeeded = new ArrayList<>();
-        for (String permission : permissions) {
-            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-                permissionsNeeded.add(permission);
-            }
-        }
-        if (!permissionsNeeded.isEmpty()) {
-            ActivityCompat.requestPermissions(this, permissionsNeeded.toArray(new String[0]), MULTIPLE_PERMISSIONS_REQUEST_CODE);
-        }
+    private void requestLocationPermissions() {
 
-    }
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case MULTIPLE_PERMISSIONS_REQUEST_CODE: {
-                if (grantResults.length > 0) {
-                    boolean allPermissionsGranted = true;
-                    for (int result : grantResults) {
-                        if (result != PackageManager.PERMISSION_GRANTED) {
-                            allPermissionsGranted = false;
-                            break;
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Permission needed")
+                    .setMessage("This permission is needed because of this and that")
+                    .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
                         }
-                    }
-                    if (allPermissionsGranted) {
-                        // Toutes les autorisations sont accordées, faites ce que vous devez faire dans ce cas.
-                    } else {
-                        // Au moins une autorisation n'est pas accordée, traitez en conséquence.
-                        // Vous pouvez informer l'utilisateur ou demander à nouveau les autorisations.
-                    }
-                }
-                break;
-            }
-            // Gérer d'autres cas de demande d'autorisations si nécessaire
+                    })
+                    .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create().show();
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
         }
     }
 
@@ -158,45 +135,58 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(view);
     }
 
-   /* private MainViewModel obtainViewModel() {
+   private MainViewModel obtainViewModel() {
         Go4LunchFactory viewModelFactory = Injection.provideViewModelFactory();
         return new ViewModelProvider(this, viewModelFactory).get(MainViewModel.class);
     }
 
-    */
-
-
-    @Override
-    public void onBackPressed() {
-        if (this.binding.mainDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-            this.binding.mainDrawerLayout.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-
     private void configureUI() {
         this.configureToolbar();
         this.configureBottomView();
+        this.configureDrawerLayout();
+        this.configureNavigationView();
     }
 
+    //----- TOOLBAR -----
     private void configureToolbar() {
         setSupportActionBar(binding.mainToolbar);
     }
 
+
+
+    //----- Bottom Navigation -----
+
     private void configureBottomView() {
-
         binding.mainBottomNavigationView.setOnNavigationItemReselectedListener(item -> onBottomNavigation(item.getItemId()));
-
     }
 
 
 
-    @SuppressLint("NonConstantResourceId")
+    @SuppressLint("WrongConstant")
     public boolean onBottomNavigation(int itemId) {
+      /*  Fragment selectedFragment = null;
 
+        switch (itemId) {
+            case R.id.bottom_navigation_menu_map_button:
+                selectedFragment = new MapsFragment();
+                break;
+            case R.id.bottom_navigation_menu_list_button:
+                selectedFragment = new ListRestFragment();
+                break;
+            case R.id.bottom_navigation_menu_workMates_button:
+                selectedFragment = new WorkmatesFragment();
+                break;
+        }
 
+        if (selectedFragment != null) {
+            MainActivity.this
+                    .getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.main_frame_layout, selectedFragment)
+                    .commit();
+        }
+
+       */
         return true;
 
     }
@@ -217,21 +207,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return super.onOptionsItemSelected(item);
     }
 
-
-    // AutoComplete
-
-    private void startAutocompleteActivity() {
-        List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.TYPES, Place.Field.LAT_LNG);
-        Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
-                .setCountry("FR")
-                .setTypeFilter(TypeFilter.ESTABLISHMENT)
-                .build(this);
-        startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
-        Log.d("auto complete search", "auto complete ok");
-    }
-
-
-    // Drawer
+    //----- DRAWER -----
 
     private void configureDrawerLayout() {
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, binding.mainDrawerLayout, binding.mainToolbar,
@@ -254,24 +230,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             emailTextview.setText(user.getEmail());
             Glide.with(this)
                     .load(user.getPhotoUrl())
-                    .transform(new CenterCrop())
+                    .transform(new CircleCrop())
                     .into(imageUser);
         }
     }
 
-    private void configureNotifications() {
-
-        this.configureNotificationIntent();
-        this.enableNotification();
+    public void onBackPressed() {
+        if (this.binding.mainDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            this.binding.mainDrawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
     }
-
-
-
-    private void configureNotificationIntent() {
-    } // A completer
-
-    private void enableNotification() {
-    } // A completer
 
 
     @Override
@@ -302,13 +272,74 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    // AutoComplete
+
+    private void startAutocompleteActivity() {
+        List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.TYPES, Place.Field.LAT_LNG);
+        Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
+                .setCountry("FR")
+                .setTypeFilter(TypeFilter.ESTABLISHMENT)
+                .build(this);
+        startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
+        Log.d("auto complete search", "auto complete ok");
+    }
+
+
+    // Drawer
+
+
+
+
+
+    private void configureNotifications() {
+
+        this.configureNotificationIntent();
+        this.enableNotification();
+    }
+
+
+
+    private void configureNotificationIntent() {
+    } // A completer
+
+    private void enableNotification() {
+    } // A completer
+
+
+
+
 
 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.main_frame_layout);
+        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                Place requestPlace = Autocomplete.getPlaceFromIntent(data);
+                if (currentFragment instanceof MapsFragment) {
+                    moveToRestaurantLocation((MapsFragment) currentFragment, requestPlace);
+                } else {
+                    displayDetailRestaurant(requestPlace);
+                }
+            }
+        }
         super.onActivityResult(requestCode, resultCode, data);
+
+    }
+
+    private void moveToRestaurantLocation(MapsFragment mapsFragment, Place requestPlace) {
+        if (requestPlace.getTypes() != null) {
+            for (Place.Type type : requestPlace.getTypes()) {
+                if (type == Place.Type.RESTAURANT) {
+                    mapsFragment.displayRestaurant(requestPlace.getLatLng(), requestPlace.getName(), requestPlace.getId());
+                }
+            }
+        }
+    }
+
+    private void displayDetailRestaurant(Place requestPlace) {
 
     }
 

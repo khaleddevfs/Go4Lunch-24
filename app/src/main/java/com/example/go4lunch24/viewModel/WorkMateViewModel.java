@@ -3,13 +3,15 @@ package com.example.go4lunch24.viewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.mygo4lunch.models.WorkMate;
-import com.example.mygo4lunch.repositories.RestaurantRepository;
-import com.example.mygo4lunch.repositories.WorkMatesRepository;
+
+import com.example.go4lunch24.models.WorkMate;
+import com.example.go4lunch24.repositories.RestaurantRepository;
+import com.example.go4lunch24.repositories.WorkMatesRepository;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class WorkMateViewModel extends BaseViewModel {
 

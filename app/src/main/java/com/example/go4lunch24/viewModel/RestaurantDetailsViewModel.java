@@ -4,10 +4,10 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.mygo4lunch.models.Restaurant;
-import com.example.mygo4lunch.models.WorkMate;
-import com.example.mygo4lunch.repositories.RestaurantRepository;
-import com.example.mygo4lunch.repositories.WorkMatesRepository;
+import com.example.go4lunch24.models.Restaurant;
+import com.example.go4lunch24.models.WorkMate;
+import com.example.go4lunch24.repositories.RestaurantRepository;
+import com.example.go4lunch24.repositories.WorkMatesRepository;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;

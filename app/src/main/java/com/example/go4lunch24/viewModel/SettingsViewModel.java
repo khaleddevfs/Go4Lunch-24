@@ -2,9 +2,10 @@ package com.example.go4lunch24.viewModel;
 
 import android.content.Context;
 
-import com.example.mygo4lunch.models.WorkMate;
-import com.example.mygo4lunch.repositories.SaveDataRepository;
-import com.example.mygo4lunch.repositories.WorkMatesRepository;
+import com.example.go4lunch24.models.WorkMate;
+import com.example.go4lunch24.repositories.SaveDataRepository;
+import com.example.go4lunch24.repositories.WorkMatesRepository;
+
 
 public class SettingsViewModel extends BaseViewModel {
 

@@ -1,7 +1,8 @@
 package com.example.go4lunch24.viewModel;
 
-import com.example.mygo4lunch.repositories.RestaurantRepository;
-import com.example.mygo4lunch.repositories.WorkMatesRepository;
+
+import com.example.go4lunch24.repositories.RestaurantRepository;
+import com.example.go4lunch24.repositories.WorkMatesRepository;
 
 public class RestaurantViewModel extends BaseViewModel{
 
