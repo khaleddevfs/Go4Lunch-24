@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class DetailsRestaurantResponseApi {
 
-    @SerializedName("results")
+    @SerializedName("result")
     private RestaurantApi results;
 
 

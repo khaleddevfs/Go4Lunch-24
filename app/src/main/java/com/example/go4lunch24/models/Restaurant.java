@@ -1,5 +1,8 @@
 package com.example.go4lunch24.models;
 
+import androidx.annotation.Nullable;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class Restaurant {
@@ -15,12 +18,13 @@ public class Restaurant {
     private float rating;
     private String phoneNumber;
     private String webSite;
-    private List<WorkMate> workMatesEatingHere;
+    private List<WorkMate> coworkersEatingHere;
 
-    public Restaurant(){ }
+    public Restaurant() {
+    }
 
-
-    public Restaurant(String restaurantID, String name, Double latitude, Double longitude, String address, boolean openNow, int distance, String photoReference, float rating, String phoneNumber, String webSite) {
+    public Restaurant(String restaurantID, String name, Double latitude, Double longitude, @Nullable String address,
+                      boolean openNow, int distance, @Nullable String photoReference, float rating, String phoneNumber, String webSite) {
         this.restaurantID = restaurantID;
         this.name = name;
         this.latitude = latitude;
@@ -32,12 +36,8 @@ public class Restaurant {
         this.rating = rating;
         this.phoneNumber = phoneNumber;
         this.webSite = webSite;
-        this.workMatesEatingHere = workMatesEatingHere;
+        this.coworkersEatingHere = new ArrayList<>();
     }
-
-    public Restaurant(String uid, String name, double latitude, double longitude, String photo, String address, int distance, boolean openNow, String webSite, String phoneNumber, float rating) {
-    }
-
 
     public String getRestaurantID() {
         return restaurantID;
@@ -83,15 +83,15 @@ public class Restaurant {
         return openNow;
     }
 
-    public void setOpenNow(boolean openNow) {
+    public void setIsOpenNow(boolean openNow) {
         this.openNow = openNow;
     }
 
-    public int getDistance() {
+    public Integer getDistance() {
         return distance;
     }
 
-    public void setDistance(int distance) {
+    public void setDistance(Integer distance) {
         this.distance = distance;
     }
 
@@ -101,6 +101,14 @@ public class Restaurant {
 
     public void setPhotoReference(String photoReference) {
         this.photoReference = photoReference;
+    }
+
+    public void setWorkMatesGoingEating(List<WorkMate> users) {
+        coworkersEatingHere = users;
+    }
+
+    public List<WorkMate> getWorkMatesEatingHere() {
+        return coworkersEatingHere;
     }
 
     public float getRating() {
@@ -126,14 +134,5 @@ public class Restaurant {
     public void setWebSite(String webSite) {
         this.webSite = webSite;
     }
-
-    public List<WorkMate> getWorkMatesEatingHere() {
-        return workMatesEatingHere;
-    }
-
-    public void setWorkMatesGoingEating(List<WorkMate> users)
-    { workMatesEatingHere = users; }
-
-
-
 }
+

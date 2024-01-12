@@ -2,6 +2,8 @@ package com.example.go4lunch24.fragments;
 
 
 
+import static com.example.go4lunch24.ui.RestaurantDetailActivity.RESTAURANT_PLACE_ID;
+
 import android.annotation.SuppressLint;
 
 import android.content.Intent;
@@ -22,6 +24,7 @@ import com.example.go4lunch24.databinding.FragmentMapsBinding;
 import com.example.go4lunch24.factory.Go4LunchFactory;
 import com.example.go4lunch24.injections.Injection;
 import com.example.go4lunch24.models.Restaurant;
+import com.example.go4lunch24.ui.RestaurantDetailActivity;
 import com.example.go4lunch24.viewModel.MapsViewModel;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -123,14 +126,17 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback, Ea
         userLocation = location;
         viewModel.fetchWorkMatesGoing();
         viewModel.workMatesIdMutableLiveData.observe(getViewLifecycleOwner(), workMatesIds ->
-                viewModel.getRestaurantList(location.getLatitude(), location.getLongitude())
-                        .observe(getViewLifecycleOwner(), restaurants ->
-                                setMapMarkers(restaurants, workMatesIds)));
+        {
+            viewModel.getRestaurantList(location.getLatitude(), location.getLongitude())
+                    .observe(getViewLifecycleOwner(), restaurants ->
+                    {
+                        setMapMarkers(restaurants, workMatesIds);
+                    });
+        });
         if (googleMap != null) {
             googleMap.animateCamera(CameraUpdateFactory
                     .newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 16));
         }
-
     }
 
     private void setMapMarkers(List<Restaurant> restaurants, List<String> workMatesIds) {
@@ -140,13 +146,15 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback, Ea
             for (Restaurant restaurant : restaurants) {
                 int iconResource = (workMatesIds.contains(restaurant.getRestaurantID())) ?
                         R.drawable.icon_location_selected : R.drawable.icon_location_normal;
-                LatLng positionRestaurant = new LatLng(restaurant.getLatitude(), restaurant.getLongitude());
-                googleMap.addMarker(new MarkerOptions()
-                                .position(positionRestaurant)
-                                .icon(BitmapDescriptorFactory.fromResource(iconResource))
-                                .title(restaurant.getName()))
-                        .setTag(restaurant.getRestaurantID());
-                onMarkerClick();
+                if (restaurant.getLatitude() != null && restaurant.getLongitude() != null) {
+                    LatLng positionRestaurant = new LatLng(restaurant.getLatitude(), restaurant.getLongitude());
+                    googleMap.addMarker(new MarkerOptions()
+                                    .position(positionRestaurant)
+                                    .icon(BitmapDescriptorFactory.fromResource(iconResource))
+                                    .title(restaurant.getName()))
+                            .setTag(restaurant.getRestaurantID());
+                    onMarkerClick();
+                }
             }
         }
 
@@ -154,7 +162,14 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback, Ea
 
     @SuppressLint("PotentialBehaviorOverride")
     private void onMarkerClick() {
-
+        googleMap.setOnMarkerClickListener(marker -> {
+            String placeId = (String) marker.getTag();
+            Log.d("tagii", "placeId: "+placeId);
+            Intent intent = new Intent(getActivity(), RestaurantDetailActivity.class);
+            intent.putExtra(RESTAURANT_PLACE_ID, placeId);
+            startActivity(intent);
+            return false;
+        });
     }
 
 

@@ -67,7 +67,7 @@ public class RestaurantRepository {
 
         GooglePlacesService googlePlacesService = Retrofit.getClient().create(GooglePlacesService.class);
         String type = "restaurant";
-        int proximityRadius = 300;
+        int proximityRadius = 600;
         Call<RestaurantResponseApi> responseApiCall = googlePlacesService.getNeatByPlaces(key, type, latitude + "," + longitude, proximityRadius);
 
         responseApiCall.enqueue(new Callback<RestaurantResponseApi>() {
@@ -92,6 +92,7 @@ public class RestaurantRepository {
 
 
     public LiveData<Restaurant> getGoogleRestaurantDetail(String placeId) {
+        Log.d("tagii", "getGoogleRestaurantDetail "+placeId);
         GooglePlacesService googlePlacesService = Retrofit.getClient().create(GooglePlacesService.class);
         String fields = "name,address_components,adr_address,formatted_address,formatted_phone_number,geometry,icon,id,international_phone_number,rating,website,utc_offset,opening_hours,photo,vicinity,place_id";
         Call<DetailsRestaurantResponseApi> detailsRestaurantResponseApiCall = googlePlacesService.getRestaurantDetail(key, placeId, fields);
@@ -102,11 +103,17 @@ public class RestaurantRepository {
             public void onResponse(@NotNull Call<DetailsRestaurantResponseApi> call, @NotNull Response<DetailsRestaurantResponseApi> response) {
                 Log.d(TAG, "onResponse getGoogleRestaurantDetail");
 
+                Log.d("tagii", "success: "+response.isSuccessful());
+                Log.d("tagii", "getResults: "+response.body().getResults());
                 if (response.isSuccessful() && response.body().getResults() != null) {
+                    Log.d("tagii", "if");
                     Restaurant restaurant = createRestaurant(response.body().getResults());
+                    Log.d("tagii", "restaurant id: "+restaurant.getRestaurantID());
                     restaurants.add(restaurant);
                     restaurantLiveData.setValue(restaurant);
                     restaurantListMutableLiveData.postValue(restaurants);
+                } else {
+                    Log.d("tagii", "else");
                 }
             }
 
@@ -118,22 +125,20 @@ public class RestaurantRepository {
         return restaurantLiveData;
     }
 
-    private Restaurant createRestaurant(RestaurantApi restaurantApi) {
-        String uid = restaurantApi.getPlaceId();
-        String name = restaurantApi.getName();
-        double latitude = restaurantApi.getGeometry().getLocation().getLat();
-        double longitude = restaurantApi.getGeometry().getLocation().getLng();
-        String photo = (restaurantApi.getPhotos() != null) ? getPhoto(restaurantApi.getPhotos().get(0).getPhotoReference()) : null;
-        String address = restaurantApi.getVicinity();
+    private Restaurant createRestaurant(RestaurantApi result) {
+        String uid = result.getPlaceId();
+        Log.d("tagii", "uid "+uid);
+        String name = result.getName();
+        double latitude = result.getGeometry().getLocation().getLat();
+        double longitude = result.getGeometry().getLocation().getLng();
+        String photo = (result.getPhotos() != null) ? getPhoto(result.getPhotos().get(0).getPhotoReference()) : null;
+        String address = result.getVicinity();
         int distance = (int) getDistance(latitude, longitude);
-        boolean openNow = restaurantApi.getOpeningHours() != null && restaurantApi.getOpeningHours().getOpenNow();
-        String webSite = restaurantApi.getWebsite();
-        String phoneNumber = restaurantApi.getPhoneNumber();
-        float rating = restaurantApi.getRating();
-
-        return new Restaurant(uid, name, latitude, longitude, photo, address, distance, openNow, webSite, phoneNumber, rating);
-
-
+        boolean openNow = result.getOpeningHours() != null && result.getOpeningHours().getOpenNow();
+        String webSite = result.getWebsite();
+        String phoneNumber = result.getPhoneNumber();
+        float rating = result.getRating();
+        return new Restaurant(uid, name, latitude, longitude, address, openNow, distance, photo, rating, phoneNumber, webSite);
     }
 
     private String getPhoto(String photoReference) {

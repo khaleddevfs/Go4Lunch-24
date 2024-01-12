@@ -36,6 +36,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.bumptech.glide.Glide;
 
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+
 import com.example.go4lunch24.R;
 import com.example.go4lunch24.databinding.ActivityMainBinding;
 
@@ -164,20 +165,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
 
-    @SuppressLint("WrongConstant")
-    public boolean onBottomNavigation(int itemId) {
+    public void onBottomNavigation(int itemId) {
         Fragment selectedFragment = null;
-/*
-        switch (itemId) {
-            case R.id.bottom_navigation_menu_map_button:
-                selectedFragment = new MapsFragment();
-                break;
-            case R.id.bottom_navigation_menu_list_button:
-                selectedFragment = new ListRestFragment();
-                break;
-            case R.id.bottom_navigation_menu_workMates_button:
-                selectedFragment = new WorkmatesFragment();
-                break;
+
+        if (itemId == R.id.bottom_navigation_menu_map_button) {
+            selectedFragment = new MapsFragment();
+        } else if (itemId == R.id.bottom_navigation_menu_list_button) {
+            selectedFragment = new ListRestFragment();
+        } else if (itemId == R.id.bottom_navigation_menu_workMates_button) {
+            selectedFragment = new WorkmatesFragment();
         }
 
         if (selectedFragment != null) {
@@ -187,12 +183,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .replace(R.id.main_frame_layout, selectedFragment)
                     .commit();
         }
-
- */
-
-
-        return true;
-
     }
 
     @Override
@@ -251,30 +241,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-      /*  switch (id) {
-            case R.id.drawer_menu_lunch_button:
-                if (selectedRestaurantId != null){
-                    Intent intent = new Intent(MainActivity.this, RestaurantDetailActivity.class);
-                    intent.putExtra(RESTAURANT_PLACE_ID, selectedRestaurantId);
-                    startActivity(intent);
-                }
-                break;
-
-            case R.id.drawer_menu_settings_button:
-                startActivity(new Intent(this, SettingActivity.class));
-                Log.d("setting activity ok", "setting on");
-                break;
-
-            case R.id.drawer_menu_logout_button:
-                FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(this, LoginActivity.class));
-                finish();
-                break;
+        if (id == R.id.drawer_menu_lunch_button) {
+            if (selectedRestaurantId != null) {
+                Intent intent = new Intent(MainActivity.this, RestaurantDetailActivity.class);
+                intent.putExtra(RESTAURANT_PLACE_ID, selectedRestaurantId);
+                startActivity(intent);
+            }
+        } else if (id == R.id.drawer_menu_settings_button) {
+            startActivity(new Intent(this, SettingActivity.class));
+            Log.d("setting activity ok", "setting on");
+        } else if (id == R.id.drawer_menu_logout_button) {
+            FirebaseAuth.getInstance().signOut();
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
         }
         this.binding.mainDrawerLayout.closeDrawer(GravityCompat.START);
-
-       */
-
         return true;
     }
 

@@ -1,6 +1,7 @@
 package com.example.go4lunch24.viewModel;
 
 import android.app.Activity;
+import android.util.Log;
 
 
 import com.example.go4lunch24.models.WorkMate;
@@ -66,21 +67,31 @@ public class LoginViewModel extends BaseViewModel {
                     } else {
                         createUserInFirestore();
                     }
+                })
+                .addOnFailureListener(error -> {
+                    Log.e("tagii", "error: "+error);
                 });
     }
 
-
-
     private void createUserInFirestore() {
-        String uid = getCurrentUser().getUid();
-        String name = getCurrentUser().getDisplayName();
-        String email = getCurrentUser().getEmail();
-        String urlPicture = (getCurrentUser().getPhotoUrl() != null) ?
-                this.getCurrentUser().getPhotoUrl().toString() : null;
-        WorkMate workMate1 = new WorkMate(uid, name, email, urlPicture);
-        workmatesRepository.createWorkmate(workMate1)
-                .addOnSuccessListener(result -> workmatesRepository.updateCurrentUser(workMate1));
+        FirebaseUser currentUser = getCurrentUser();
+
+        if (currentUser != null) {
+            String uid = currentUser.getUid();
+            String name = currentUser.getDisplayName();
+            String email = currentUser.getEmail();
+            String urlPicture = (currentUser.getPhotoUrl() != null) ?
+                    currentUser.getPhotoUrl().toString() : null;
+
+            WorkMate workMate1 = new WorkMate(uid, name, email, urlPicture);
+            workmatesRepository.createWorkmate(workMate1)
+                    .addOnSuccessListener(result -> workmatesRepository.updateCurrentUser(workMate1))
+                    .addOnFailureListener(error -> Log.e("tagii", "error create user: " + error));
+        } else {
+            Log.e("tagii", "Current user is null in createUserInFirestore");
+        }
     }
+
 
 
 
