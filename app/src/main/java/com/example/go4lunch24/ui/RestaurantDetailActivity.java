@@ -58,6 +58,9 @@ public class RestaurantDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+               //ajouter pour verifier le fab
+             changeChoiceStatus(true);
+
             }
         });
     }

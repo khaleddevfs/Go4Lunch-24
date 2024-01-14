@@ -14,9 +14,9 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/ic_logo_go4lunch"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Go4Lunch24"
+        android:theme="@style/AppTheme"
         tools:targetApi="31">
         <activity
             android:name=".ui.RestaurantDetailActivity"
@@ -28,7 +28,9 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-
+        <activity
+            android:name=".ui.SettingActivity"
+            android:exported="false" />
         <activity
             android:name=".ui.MainActivity"
             android:exported="false" />

@@ -88,6 +88,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         viewModel = obtainViewModel();
         configureUI();
 
+        getRestaurantUser();
+
         // changing Action bar Title
 
         ActionBar actionBar = getSupportActionBar();
@@ -237,6 +239,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    private void getRestaurantUser() {
+        viewModel.getSelectedRestaurant();
+        viewModel.selectedRestaurantId.observe(this, id -> selectedRestaurantId = id);
+    }
+
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -272,32 +279,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    // Drawer
-
-
-
-
-
-    private void configureNotifications() {
-
-        this.configureNotificationIntent();
-        this.enableNotification();
-    }
-
-
-
-    private void configureNotificationIntent() {
-    } // A completer
-
-    private void enableNotification() {
-    } // A completer
-
-
-
-
-
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -327,8 +308,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void displayDetailRestaurant(Place requestPlace) {
+        if (requestPlace.getTypes() != null) {
+            for (Place.Type type : requestPlace.getTypes()) {
+                if (type == Place.Type.RESTAURANT) {
+                    Intent detailIntent = new Intent(this, RestaurantDetailActivity.class);
+                    detailIntent.putExtra(RESTAURANT_PLACE_ID, requestPlace.getId());
+                    startActivity(detailIntent);
+                }
+            }
+        }
 
     }
+
+    private void configureNotifications() {
+
+        this.configureNotificationIntent();
+        this.enableNotification();
+    }
+
+
+
+    private void configureNotificationIntent() {
+    } // A completer
+
+    private void enableNotification() {
+    } // A completer
+
+
 
 
 }
