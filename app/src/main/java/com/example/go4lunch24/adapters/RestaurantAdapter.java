@@ -19,9 +19,9 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantViewHolder
     public RestaurantAdapter() {
     }
 
-    public void setRestaurantList(List<Restaurant> restaurantList, List<String> coworkerIds) {
+    public void setRestaurantList(List<Restaurant> restaurantList, List<String> workMateIds) {
         this.restaurantList = restaurantList;
-        this.workMateIds = coworkerIds;
+        this.workMateIds = workMateIds;
         notifyDataSetChanged();
     }
 

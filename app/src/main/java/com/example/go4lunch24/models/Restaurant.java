@@ -18,7 +18,7 @@ public class Restaurant {
     private float rating;
     private String phoneNumber;
     private String webSite;
-    private List<WorkMate> coworkersEatingHere;
+    private List<WorkMate> workMatesEatingHere;
 
     public Restaurant() {
     }
@@ -36,7 +36,7 @@ public class Restaurant {
         this.rating = rating;
         this.phoneNumber = phoneNumber;
         this.webSite = webSite;
-        this.coworkersEatingHere = new ArrayList<>();
+        this.workMatesEatingHere = new ArrayList<>();
     }
 
     public String getRestaurantID() {
@@ -104,11 +104,11 @@ public class Restaurant {
     }
 
     public void setWorkMatesGoingEating(List<WorkMate> users) {
-        coworkersEatingHere = users;
+        workMatesEatingHere = users;
     }
 
     public List<WorkMate> getWorkMatesEatingHere() {
-        return coworkersEatingHere;
+        return workMatesEatingHere;
     }
 
     public float getRating() {

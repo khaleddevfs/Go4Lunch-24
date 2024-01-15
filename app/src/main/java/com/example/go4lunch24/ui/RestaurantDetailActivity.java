@@ -58,8 +58,7 @@ public class RestaurantDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-               //ajouter pour verifier le fab
-             changeChoiceStatus(true);
+                viewModel.updateRestaurantPiked(restaurant);
 
             }
         });
@@ -82,6 +81,8 @@ public class RestaurantDetailActivity extends AppCompatActivity {
         viewModel.getRestaurantDetail(placeId).observe(this, this::displayInfoRestaurant);
     }
 
+
+    //j'ai modifie cette classe pour resourdre le probleme d'affichage des photos des restaurants
     private void displayInfoRestaurant(Restaurant restaurant) {
         this.restaurant = restaurant;
         binding.restaurantDetailName.setText(restaurant.getName());
@@ -91,12 +92,13 @@ public class RestaurantDetailActivity extends AppCompatActivity {
             Glide.with(RestaurantDetailActivity.this)
                     .load(restaurant.getPhotoReference())
                     .apply(RequestOptions.centerCropTransform())
-                    .into(this.binding.restaurantDetailPicture);
+                    .into(binding.restaurantDetailPicture);
         }
 
         viewModel.fetchInfoRestaurant(restaurant);
         viewModel.fetchWorkMateLike(restaurant);
     }
+
 
     private void initWorkMatesList() {
         WorkMateDetailAdapter workMateDetailAdapter = new WorkMateDetailAdapter();

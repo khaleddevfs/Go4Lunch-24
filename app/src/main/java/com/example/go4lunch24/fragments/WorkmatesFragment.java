@@ -44,7 +44,7 @@ public class WorkmatesFragment extends Fragment {
     protected void configureFragmentOnCreateView() {
         workMateViewModel = obtainViewModel();
         initRecyclerView();
-        setupCoworkersList();
+        setupWorkMatesList();
 
 
     }
@@ -61,7 +61,7 @@ public class WorkmatesFragment extends Fragment {
         binding.restaurantRecyclerView.setAdapter(workMateAdapter);
     }
 
-    private void setupCoworkersList() {
+    private void setupWorkMatesList() {
 
         workMateViewModel.fetchListUsersFromFirebase();
         workMateViewModel.getWorkMates().observe(getViewLifecycleOwner(), this::showUsers);

@@ -5,18 +5,18 @@ import com.google.gson.annotations.SerializedName;
 public class DetailsRestaurantResponseApi {
 
     @SerializedName("result")
-    private RestaurantApi results;
+    private RestaurantApi result;
 
 
     @SerializedName("status")
     private String status;
 
-    public RestaurantApi getResults() {
-        return results;
+    public RestaurantApi getResult() {
+        return result;
     }
 
-    public void setResults(RestaurantApi results) {
-        this.results = results;
+    public void setResult(RestaurantApi result) {
+        this.result = result;
     }
 
     public String getStatus() {

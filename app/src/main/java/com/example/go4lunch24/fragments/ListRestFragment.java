@@ -81,8 +81,8 @@ public class ListRestFragment extends BaseFragment {
                                         changeAndNotifyAdapterChange(list, workMateIds )));
     }
 
-    private void changeAndNotifyAdapterChange(List<Restaurant> restaurants, List<String> coworkerIds) {
-        adapter.setRestaurantList(restaurants, coworkerIds);
+    private void changeAndNotifyAdapterChange(List<Restaurant> restaurants, List<String> workMateIds) {
+        adapter.setRestaurantList(restaurants, workMateIds);
     }
 
 

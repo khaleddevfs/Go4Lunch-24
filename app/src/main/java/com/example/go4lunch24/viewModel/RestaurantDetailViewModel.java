@@ -43,8 +43,9 @@ public class RestaurantDetailViewModel extends BaseViewModel {
     }
 
     public void fetchInfoRestaurant(Restaurant restaurant){
+        Log.d("like and pick", "fetch resto ok ");
         this.restaurant = restaurant;
-        fetchWorkMatesGoing();
+        fetchUsersGoing();
         isRestaurantLiked.setValue(checkIfRestaurantIsLiked());
         if (workMate.getWorkMateRestaurantChoice() != null) {
             String uidSelection = workMate.getWorkMateRestaurantChoice().getRestaurantId();
@@ -56,6 +57,7 @@ public class RestaurantDetailViewModel extends BaseViewModel {
 
     }
     public void updateRestaurantLiked(Restaurant restaurant) {
+        Log.d("like and pick", "update like ok ");
         if (isRestaurantLiked.getValue()) {
             isRestaurantLiked.setValue(false);
             workmatesRepository.removeLikedRestaurant(restaurant.getRestaurantID())
@@ -68,7 +70,7 @@ public class RestaurantDetailViewModel extends BaseViewModel {
     }
 
     public void updateRestaurantPiked(Restaurant restaurant) {
-
+        Log.d("like and pick", "fetch pick ok ");
         if (isRestaurantPicked.getValue()) {
             isRestaurantPicked.setValue(false);
             workmatesRepository.updateRestaurantPicked(null, null, null, workMate.getUid())
@@ -90,12 +92,13 @@ public class RestaurantDetailViewModel extends BaseViewModel {
             String restaurantUid = restaurant.getRestaurantID();
             if (likedRestaurant != null && restaurantUid != null && likedRestaurant.contains(restaurantUid)) {
                 isRestaurantLiked.setValue(true);
+                Log.d("like and pick", "fetch likes ok ");
             }
         }
     }
 
     private void fetchUsersGoing() {
-
+        Log.d("like and pick", "fetch users going ok ");
         List<WorkMate> workMateToAdd = new ArrayList<>();
         workmatesRepository.getAllWorkMate()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
@@ -119,6 +122,7 @@ public class RestaurantDetailViewModel extends BaseViewModel {
         if (restaurantLiked != null && restaurantLiked.size() > 0) {
             for (String uid : restaurantLiked) {
                 if (uid.equals(restaurant.getRestaurantID())) return true;
+                Log.d("like and pick", "check ok ");
             }
         }
         return false;

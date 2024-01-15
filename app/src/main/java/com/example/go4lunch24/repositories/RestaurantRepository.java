@@ -16,6 +16,7 @@ import androidx.lifecycle.MutableLiveData;
 
 
 import com.example.go4lunch24.R;
+import com.example.go4lunch24.databinding.FragmentMapsBinding;
 import com.example.go4lunch24.models.DetailsRestaurantResponseApi;
 import com.example.go4lunch24.models.Restaurant;
 import com.example.go4lunch24.models.RestaurantApi;
@@ -104,10 +105,10 @@ public class RestaurantRepository {
                 Log.d(TAG, "onResponse getGoogleRestaurantDetail");
 
                 Log.d("tagii", "success: "+response.isSuccessful());
-                Log.d("tagii", "getResults: "+response.body().getResults());
-                if (response.isSuccessful() && response.body().getResults() != null) {
+                Log.d("tagii", "getResults: "+response.body().getResult());
+                if (response.isSuccessful() && response.body().getResult() != null) {
                     Log.d("tagii", "if");
-                    Restaurant restaurant = createRestaurant(response.body().getResults());
+                    Restaurant restaurant = createRestaurant(response.body().getResult());
                     Log.d("tagii", "restaurant id: "+restaurant.getRestaurantID());
                     restaurants.add(restaurant);
                     restaurantLiveData.setValue(restaurant);

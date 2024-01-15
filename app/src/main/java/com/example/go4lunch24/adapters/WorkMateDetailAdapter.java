@@ -36,8 +36,8 @@ public class WorkMateDetailAdapter extends RecyclerView.Adapter<WorkMateDetailVi
         return 0;
     }
 
-    public void setWorkMateList(List<WorkMate> coworkerLists) {
-        this.workMateList = coworkerLists;
+    public void setWorkMateList(List<WorkMate> workmateLists) {
+        this.workMateList = workmateLists;
         notifyDataSetChanged();
     }
 }

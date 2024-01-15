@@ -9,13 +9,19 @@ import static com.example.go4lunch24.ui.RestaurantDetailActivity.RESTAURANT_PLAC
 import android.Manifest;
 import android.annotation.SuppressLint;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 
 
-
-
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -45,6 +51,7 @@ import com.example.go4lunch24.fragments.ListRestFragment;
 import com.example.go4lunch24.fragments.MapsFragment;
 import com.example.go4lunch24.fragments.WorkmatesFragment;
 import com.example.go4lunch24.injections.Injection;
+import com.example.go4lunch24.notification.NotificationLunchService;
 import com.example.go4lunch24.viewModel.MainViewModel;
 
 import com.google.android.libraries.places.api.Places;
@@ -59,6 +66,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -74,8 +82,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private int AUTOCOMPLETE_REQUEST_CODE = 1;
 
 
+    private PendingIntent pendingIntentAlarm;
 
-
+    private static int[] TIME_NOTIFICATION = {12, 00};
 
     private String selectedRestaurantId;
 
@@ -87,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         initView();
         viewModel = obtainViewModel();
         configureUI();
-
+        configureNotifications();
         getRestaurantUser();
 
         // changing Action bar Title
@@ -167,6 +176,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
 
+
+
+
     public void onBottomNavigation(int itemId) {
         Fragment selectedFragment = null;
 
@@ -186,6 +198,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .commit();
         }
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -321,20 +335,64 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void configureNotifications() {
-
+        this.createNotificationChannel();
         this.configureNotificationIntent();
         this.enableNotification();
     }
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String channelId = getString(R.string.notificationChannel);
+            CharSequence name = getString(R.string.name_channel);
+            String description = getString(R.string.description_channel);
+            int importance = NotificationManager.IMPORTANCE_HIGH;
 
+            NotificationChannel channel = new NotificationChannel(channelId, name, importance);
+            channel.setDescription(description);
 
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
+        }
+    }
 
     private void configureNotificationIntent() {
-    } // A completer
+        Intent notificationIntent = new Intent(this, NotificationLunchService.class);
+        pendingIntentAlarm = PendingIntent.getBroadcast(
+                this,
+                0,
+                notificationIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+    }
 
     private void enableNotification() {
-    } // A completer
+        Calendar notificationTime = Calendar.getInstance();
+        notificationTime.set(Calendar.HOUR_OF_DAY, TIME_NOTIFICATION[0]);
+        notificationTime.set(Calendar.MINUTE, TIME_NOTIFICATION[1]);
+        notificationTime.set(Calendar.MILLISECOND, 0);
 
+        Calendar calendar = Calendar.getInstance();
+        if (notificationTime.before(calendar)) {
+            notificationTime.add(Calendar.DATE, 1);
+        }
 
+        ComponentName receiver = new ComponentName(getApplicationContext(), NotificationLunchService.class);
+        PackageManager pm = getApplicationContext().getPackageManager();
+        pm.setComponentEnabledSetting(receiver, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
 
-
+        AlarmManager manager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        if (manager != null) {
+            manager.setInexactRepeating(
+                    AlarmManager.RTC_WAKEUP,
+                    notificationTime.getTimeInMillis(),
+                    AlarmManager.INTERVAL_DAY,
+                    pendingIntentAlarm
+            );
+        }
+    }
 }
+
+
+
+

@@ -26,7 +26,7 @@ public class RestaurantViewHolder extends RecyclerView.ViewHolder {
         this.binding = binding;
     }
 
-    public void updateRestaurantInfo(Restaurant restaurant, List<String> coworkerIds) {
+    public void updateRestaurantInfo(Restaurant restaurant, List<String> workMateIds) {
         binding.restaurantItemListName.setText(restaurant.getName());
 
         context = binding.getRoot().getContext();
@@ -37,7 +37,7 @@ public class RestaurantViewHolder extends RecyclerView.ViewHolder {
         if (restaurant.getAddress() != null) {
             binding.restaurantItemListAddress.setText(restaurant.getAddress());
         }
-        int counter = checkCoworkersEatingHere(restaurant.getRestaurantID(), coworkerIds);
+        int counter = checkWorkMatesEatingHere(restaurant.getRestaurantID(), workMateIds);
         binding.restaurantItemListParticipantsNumber.setText("(" + counter + ")");
         binding.restaurantItemListInfo.setText((restaurant.isOpenNow()) ? R.string.restaurant_on : R.string.restaurant_closed_today);
         TextViewCompat.setTextAppearance(binding.restaurantItemListInfo, R.style.TimeRestaurantOpen);
@@ -58,10 +58,10 @@ public class RestaurantViewHolder extends RecyclerView.ViewHolder {
         });
     }
 
-    private int checkCoworkersEatingHere(String restaurantId, List<String> coworkerIds) {
+    private int checkWorkMatesEatingHere(String restaurantId, List<String> workMateIds) {
         int counter = 0;
-        if (coworkerIds != null) {
-            for (String id : coworkerIds) {
+        if (workMateIds != null) {
+            for (String id : workMateIds) {
                 if (id.equals(restaurantId)) {
                     counter++;
                 }
