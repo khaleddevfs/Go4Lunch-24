@@ -43,6 +43,7 @@ dependencies {
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("org.jetbrains:annotations:23.0.0")
+    implementation("androidx.cardview:cardview:1.0.0")
     testImplementation("junit:junit:4.13.2")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
     androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
@@ -87,6 +88,9 @@ dependencies {
 
     androidTestImplementation ("junit:junit:4.13.2")
     androidTestImplementation ("junit:junit:4.13.2")
+
+    implementation ("com.squareup.okhttp3:okhttp:3.14.0")
+    implementation ("com.github.bumptech.glide:okhttp3-integration:4.7.1")
 
     // RxJAVA2
 

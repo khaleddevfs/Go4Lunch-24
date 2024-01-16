@@ -68,7 +68,7 @@ public class RestaurantRepository {
 
         GooglePlacesService googlePlacesService = Retrofit.getClient().create(GooglePlacesService.class);
         String type = "restaurant";
-        int proximityRadius = 600;
+        int proximityRadius = 800;
         Call<RestaurantResponseApi> responseApiCall = googlePlacesService.getNeatByPlaces(key, type, latitude + "," + longitude, proximityRadius);
 
         responseApiCall.enqueue(new Callback<RestaurantResponseApi>() {
@@ -143,7 +143,7 @@ public class RestaurantRepository {
     }
 
     private String getPhoto(String photoReference) {
-        return BASE_URL_GOOGLE + PHOTO_REF_GOOGLE + photoReference + MAX_WIDTH_GOOGLE + 400 + KEY_GOOGLE + R.string.MAPS_API_KEY;
+        return BASE_URL_GOOGLE + PHOTO_REF_GOOGLE + photoReference + MAX_WIDTH_GOOGLE + 400 + KEY_GOOGLE + key;
     }
 
 

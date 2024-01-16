@@ -1,5 +1,6 @@
 package com.example.go4lunch24.ui;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
@@ -11,11 +12,17 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.HttpException;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 import com.example.go4lunch24.R;
 import com.example.go4lunch24.adapters.WorkMateDetailAdapter;
 import com.example.go4lunch24.databinding.ActivityRestaurantDetailBinding;
@@ -85,19 +92,61 @@ public class RestaurantDetailActivity extends AppCompatActivity {
     //j'ai modifie cette classe pour resourdre le probleme d'affichage des photos des restaurants
     private void displayInfoRestaurant(Restaurant restaurant) {
         this.restaurant = restaurant;
+
+        // Ajouter un log pour afficher le nom du restaurant
+        Log.d("RestaurantDetail", "Nom du restaurant : " + restaurant.getName());
         binding.restaurantDetailName.setText(restaurant.getName());
+
+        // Ajouter un log pour afficher l'adresse du restaurant
+        Log.d("RestaurantDetail", "Adresse du restaurant : " + restaurant.getAddress());
         binding.restaurantDetailAddress.setText(restaurant.getAddress());
 
         if (restaurant.getPhotoReference() != null) {
+            // Ajouter un log pour indiquer le chargement de la photo
+            Log.d("RestaurantDetail", "Chargement de la photo du restaurant...");
+
             Glide.with(RestaurantDetailActivity.this)
                     .load(restaurant.getPhotoReference())
                     .apply(RequestOptions.centerCropTransform())
+                    .listener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                            // Ajouter un log en cas d'échec du chargement de la photo
+                            if (e != null && e.getRootCauses() != null && e.getRootCauses().size() > 0) {
+                                for (Throwable cause : e.getRootCauses()) {
+                                    if (cause instanceof HttpException) {
+                                        int statusCode = ((HttpException) cause).getStatusCode();
+                                        if (statusCode == 403) {
+                                            Log.e("RestaurantDetail", "Erreur 403 - Accès interdit lors du chargement de la photo : " + cause.getMessage());
+                                            // Autres actions à entreprendre en cas d'erreur 403, si nécessaire
+                                        }
+                                    }
+                                }
+                            }
+                            return false;
+                        }
+
+
+            @Override
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                            // Ajouter un log lorsque la photo est chargée avec succès
+                            Log.d("RestaurantDetail", "Chargement de la photo réussi");
+                            return false;
+                        }
+                    })
                     .into(binding.restaurantDetailPicture);
         }
 
+
+        // Ajouter un log pour indiquer le début de la récupération des informations du restaurant
+        Log.d("RestaurantDetail", "Récupération des informations du restaurant...");
         viewModel.fetchInfoRestaurant(restaurant);
+
+        // Ajouter un log pour indiquer le début de la récupération des informations sur les amis qui aiment le restaurant
+        Log.d("RestaurantDetail", "Récupération des informations sur les amis qui aiment le restaurant...");
         viewModel.fetchWorkMateLike(restaurant);
     }
+
 
 
     private void initWorkMatesList() {
