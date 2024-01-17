@@ -4,9 +4,12 @@ package com.example.go4lunch24.fragments;
 
 import static com.example.go4lunch24.ui.RestaurantDetailActivity.RESTAURANT_PLACE_ID;
 
+import android.Manifest;
+
 import android.annotation.SuppressLint;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +19,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 
@@ -104,8 +108,21 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback, Ea
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
         googleMap.setIndoorEnabled(false);
-        updateLocationUI();
-        googleMap.setOnCameraMoveListener(this::onMarkerClick);
+        // Vérifier et demander les autorisations de localisation
+        if (ContextCompat.checkSelfPermission(requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+            // Autorisations accordées, activer la fonction de localisation
+            updateLocationUI();
+            googleMap.setOnCameraMoveListener(this::onMarkerClick);
+            googleMap.setMyLocationEnabled(true);
+            googleMap.getUiSettings().setMyLocationButtonEnabled(true);
+
+
+        } else {
+            // Les autorisations de localisation ne sont pas accordées, demander les autorisations
+            updateLocationUI();
+        }
     }
 
 
@@ -114,6 +131,7 @@ public class MapsFragment extends BaseFragment implements OnMapReadyCallback, Ea
     @Override
     protected void configureFragmentOnCreateView(View view) {
         viewModel = obtainViewModel();
+
     }
 
     private MapsViewModel obtainViewModel() {

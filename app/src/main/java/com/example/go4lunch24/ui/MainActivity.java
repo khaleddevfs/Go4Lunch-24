@@ -180,6 +180,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     public void onBottomNavigation(int itemId) {
+
+        Log.d("BottomNavigation", "onBottomNavigation called, itemId: " + itemId);
+
         Fragment selectedFragment = null;
 
         if (itemId == R.id.bottom_navigation_menu_map_button) {
@@ -191,6 +194,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         if (selectedFragment != null) {
+
+            Log.d("BottomNavigation", "Replacing fragment with: " + selectedFragment.getClass().getSimpleName());
+
             MainActivity.this
                     .getSupportFragmentManager()
                     .beginTransaction()
