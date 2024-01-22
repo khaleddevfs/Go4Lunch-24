@@ -32,7 +32,7 @@ public abstract class BaseFragment extends Fragment implements EasyPermissions.P
 
     public final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 0;
 
-    public abstract void getLocationUser(Location locationUser);
+    public abstract void getLocationUser(android.location.Location locationUser);
 
 
     protected abstract void configureFragmentOnCreateView(View view);

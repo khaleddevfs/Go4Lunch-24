@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".fragments.ListRestFragment"
     tools:listitem="@layout/rest_item_layout"
+    android:layout_marginBottom="12dp"
     android:id="@+id/restaurantRecyclerView">
 
 

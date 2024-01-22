@@ -3,9 +3,7 @@ package com.example.go4lunch24.ui;
 
 
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
+
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -13,18 +11,22 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+
 import com.example.go4lunch24.databinding.ActivityLoginBinding;
+import com.example.go4lunch24.factory.Go4LunchFactory;
+import com.example.go4lunch24.injections.Injection;
 import com.example.go4lunch24.viewModel.LoginViewModel;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
+import static com.example.go4lunch24.viewModel.LoginViewModel.RC_SIGN_IN;
 
 public class LoginActivity extends AppCompatActivity {
 
     private ActivityLoginBinding loginBinding;
 
     private LoginViewModel viewModel;
+
+
 
     
 
@@ -35,6 +37,12 @@ public class LoginActivity extends AppCompatActivity {
         initView();
 
         initListener();
+
+        viewModel = obtainViewModel();
+
+        checkSessionUser();
+
+
 
     }
 
@@ -53,14 +61,34 @@ public class LoginActivity extends AppCompatActivity {
         loginBinding.twitterLoginButton.setOnClickListener(v -> viewModel.startLoginActivityTwitter(LoginActivity.this));
     }
 
+    private LoginViewModel obtainViewModel() {
+        Go4LunchFactory viewModelFactory = Injection.provideViewModelFactory();
+        return new ViewModelProvider(this, viewModelFactory).get(LoginViewModel.class);
+    }
 
 
+    private void checkSessionUser() {
+        viewModel.updateCurrentUser();
+        if (viewModel.isCurrentUserLogged()) {
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+        }
+    }
 
 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == RC_SIGN_IN) {
+            if (resultCode == RESULT_OK) {
+                viewModel.updateCurrentUser();
+                Intent loginIntent = new Intent(this, MainActivity.class);
+                startActivity(loginIntent);
+            } else {
+                Toast.makeText(this, "marche pas ", Toast.LENGTH_SHORT).show();
+            }
+        }
 
     }
 }

@@ -11,7 +11,7 @@
     android:layout_marginEnd="8dp"
     android:layout_marginBottom="12dp"
     android:orientation="vertical"
-    tools:context="com.example.mygo4lunch.ui.MainActivity">
+    tools:context="com.example.go4lunch24.ui.MainActivity">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/center_guideline"
