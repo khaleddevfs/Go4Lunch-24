@@ -39,7 +39,8 @@ public class BaseViewModel extends ViewModel {
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots.getDocuments()) {
                         WorkMate workMate = documentSnapshot.toObject(WorkMate.class);
-                        if (workMate != null && workMate.getWorkMateRestaurantChoice() != null && workMate.getWorkMateRestaurantChoice(). getRestaurantId() !=null ) {
+                        assert workMate != null;
+                        if (workMate.getWorkMateRestaurantChoice() != null && workMate.getWorkMateRestaurantChoice(). getRestaurantId() !=null ) {
                             String restaurantUid = workMate.getWorkMateRestaurantChoice().getRestaurantId();
                             workMatesToAdd.add(restaurantUid);
                         }

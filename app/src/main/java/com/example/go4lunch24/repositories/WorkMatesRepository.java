@@ -4,6 +4,7 @@ package com.example.go4lunch24.repositories;
 import com.example.go4lunch24.models.WorkMate;
 import com.example.go4lunch24.models.WorkMateRestaurantChoice;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -23,7 +24,7 @@ public class WorkMatesRepository {
 
     private static volatile WorkMatesRepository INSTANCE;
 
-    public static WorkMatesRepository getINSTANCE() {
+    public static WorkMatesRepository getInstance() {
         if (INSTANCE == null){
             INSTANCE = new WorkMatesRepository();
         }
@@ -45,8 +46,13 @@ public class WorkMatesRepository {
     }
 
     public Task<Void> createWorkmate(WorkMate workMate) {
-        this.workMate = workMate;
-        return workMateCollection.document(workMate.getUid()).set(workMate);
+        if (workMate != null) {
+            this.workMate = workMate;
+            return workMateCollection.document(workMate.getUid()).set(workMate);
+        } else {
+            // Gérer le cas où workMate est null.
+            return Tasks.forException(new NullPointerException("WorkMate object is null."));
+        }
     }
 
 
@@ -59,21 +65,36 @@ public class WorkMatesRepository {
     }
 
     public Task<Void> updateRestaurantPicked(String id, String name, String address, String userUid) {
-        WorkMateRestaurantChoice choice = new WorkMateRestaurantChoice(id, name, address, Timestamp.now());
-        workMate.setWorkMateRestaurantChoice(choice);
-        WorkMateRestaurantChoice choiceToCreate = (id != null) ? choice : null;
-        return workMateCollection.document(userUid).update("workMateRestaurantChoice", choiceToCreate);
+        if (workMate != null) {
+            WorkMateRestaurantChoice choice = new WorkMateRestaurantChoice(id, name, address, Timestamp.now());
+            workMate.setWorkMateRestaurantChoice(choice);
+            WorkMateRestaurantChoice choiceToCreate = (id != null) ? choice : null;
+            return workMateCollection.document(userUid).update("workMateRestaurantChoice", choiceToCreate);
+        } else {
+            // Gérer le cas où workMate est null.
+            return Tasks.forException(new NullPointerException("WorkMate object is null."));
+        }
     }
 
 
     public Task<Void> addLikedRestaurant(String likedRestaurant) {
-        workMate.addLikedRestaurant(likedRestaurant);
-        return updateLikedRestaurants(workMate.getUid());
+        if (workMate != null) {
+            workMate.addLikedRestaurant(likedRestaurant);
+            return updateLikedRestaurants(workMate.getUid());
+        } else {
+            // Gérer le cas où workMate est null.
+            return Tasks.forException(new NullPointerException("WorkMate object is null."));
+        }
     }
 
     public Task<Void> removeLikedRestaurant(String likedRestaurant){
-        workMate.removeLikedRestaurant((likedRestaurant));
-        return updateLikedRestaurants(workMate.getUid());
+        if (workMate != null) {
+            workMate.removeLikedRestaurant(likedRestaurant);
+            return updateLikedRestaurants(workMate.getUid());
+        } else {
+            // Gérer le cas où workMate est null.
+            return Tasks.forException(new NullPointerException("WorkMate object is null."));
+        }
     }
 
     private Task<Void> updateLikedRestaurants(String uid) {

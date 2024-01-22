@@ -89,7 +89,6 @@ public class RestaurantDetailActivity extends AppCompatActivity {
     }
 
 
-    //j'ai modifie cette classe pour resourdre le probleme d'affichage des photos des restaurants
     private void displayInfoRestaurant(Restaurant restaurant) {
         this.restaurant = restaurant;
 
@@ -138,11 +137,9 @@ public class RestaurantDetailActivity extends AppCompatActivity {
         }
 
 
-        // Ajouter un log pour indiquer le début de la récupération des informations du restaurant
         Log.d("RestaurantDetail", "Récupération des informations du restaurant...");
         viewModel.fetchInfoRestaurant(restaurant);
 
-        // Ajouter un log pour indiquer le début de la récupération des informations sur les amis qui aiment le restaurant
         Log.d("RestaurantDetail", "Récupération des informations sur les amis qui aiment le restaurant...");
         viewModel.fetchWorkMateLike(restaurant);
     }

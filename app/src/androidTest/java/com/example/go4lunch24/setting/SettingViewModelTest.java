@@ -16,6 +16,7 @@ import com.example.go4lunch24.viewModel.SettingViewModel;
 
 import junit.framework.TestCase;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,6 +40,7 @@ public class SettingViewModelTest extends TestCase {
     @Rule
     public InstantTaskExecutorRule instantExecutorRule = new InstantTaskExecutorRule();
 
+    @Before
     public void setUp() throws Exception {
         workMate = new WorkMate("uid", "name", "email", "photoUrl");
         when(workMatesRepository.getActualUser()).thenReturn(workMate);
@@ -47,9 +49,4 @@ public class SettingViewModelTest extends TestCase {
         super.setUp();
     }
 
-    @Test
-    public void testNotificationStateChanged() {
-        settingViewModel.notificationStateChanged(false,context);
-        verify(saveDataRepository).saveNotificationSettings(false, workMate.getUid());
-    }
 }

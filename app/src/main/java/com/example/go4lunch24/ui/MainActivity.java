@@ -84,9 +84,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private PendingIntent pendingIntentAlarm;
 
-    private static int[] TIME_NOTIFICATION = {12, 00};
+    private static int[] TIME_NOTIFICATION = {15,28};
 
     private String selectedRestaurantId;
+
 
 
     @Override
@@ -141,6 +142,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
         }
     }
+
+
 
 
     private void initView() {
@@ -340,39 +343,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    private void configureNotifications() {
+    public void configureNotifications() {
         this.createNotificationChannel();
         this.configureNotificationIntent();
         this.enableNotification();
     }
-    private void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            String channelId = getString(R.string.notificationChannel);
-            CharSequence name = getString(R.string.name_channel);
-            String description = getString(R.string.description_channel);
-            int importance = NotificationManager.IMPORTANCE_HIGH;
+    public void createNotificationChannel() {
 
-            NotificationChannel channel = new NotificationChannel(channelId, name, importance);
-            channel.setDescription(description);
+        String channelId = getString(R.string.notificationChannel);
+        CharSequence name = getString(R.string.name_channel);
+        String description = getString(R.string.description_channel);
+        int importance = NotificationManager.IMPORTANCE_HIGH;
 
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            if (notificationManager != null) {
-                notificationManager.createNotificationChannel(channel);
-            }
-        }
+        NotificationChannel channel = new NotificationChannel(channelId, name, importance);
+        channel.setDescription(description);
+
+        NotificationManager notificationManager = getSystemService(NotificationManager.class);
+
+        notificationManager.createNotificationChannel(channel);
+        Log.d("lodi", "Notification channel ok" + description);
+
     }
 
-    private void configureNotificationIntent() {
+
+    public void configureNotificationIntent() {
         Intent notificationIntent = new Intent(this, NotificationLunchService.class);
-        pendingIntentAlarm = PendingIntent.getBroadcast(
-                this,
-                0,
-                notificationIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-        );
+        pendingIntentAlarm = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
+        Log.d("lodi", "Notification intent configured");
     }
 
-    private void enableNotification() {
+    public void enableNotification() {
         Calendar notificationTime = Calendar.getInstance();
         notificationTime.set(Calendar.HOUR_OF_DAY, TIME_NOTIFICATION[0]);
         notificationTime.set(Calendar.MINUTE, TIME_NOTIFICATION[1]);
@@ -388,16 +388,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         pm.setComponentEnabledSetting(receiver, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
 
         AlarmManager manager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-        if (manager != null) {
             manager.setInexactRepeating(
                     AlarmManager.RTC_WAKEUP,
                     notificationTime.getTimeInMillis(),
                     AlarmManager.INTERVAL_DAY,
                     pendingIntentAlarm
             );
+            Log.d("lodi", "Notification enabled for: " + notificationTime.getTime());
+
         }
     }
-}
+
 
 
 

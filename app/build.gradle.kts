@@ -18,6 +18,15 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    configurations {
+        testImplementation {
+            exclude(group = "net.bytebuddy")
+        }
+    }
+
+
+
+
 
     buildFeatures {
         viewBinding = true }
@@ -42,7 +51,7 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("org.jetbrains:annotations:23.0.0")
+    implementation("org.jetbrains:annotations:24.1.0")
     implementation("androidx.cardview:cardview:1.0.0")
     testImplementation("junit:junit:4.13.2")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
@@ -69,7 +78,7 @@ dependencies {
 
     //Google
 
-    implementation ("com.google.maps.android:android-maps-utils:3.8.0")
+    implementation ("com.google.maps.android:android-maps-utils:3.8.2")
     implementation ("com.google.android.gms:play-services-location:21.0.1")
     implementation ("com.google.android.libraries.places:places:3.3.0")
 
@@ -78,7 +87,7 @@ dependencies {
 
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation ("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.11")
+    implementation ("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.12")
 
 
     //GLIDE
@@ -89,8 +98,8 @@ dependencies {
     androidTestImplementation ("junit:junit:4.13.2")
     androidTestImplementation ("junit:junit:4.13.2")
 
-    implementation ("com.squareup.okhttp3:okhttp:3.14.0")
-    implementation ("com.github.bumptech.glide:okhttp3-integration:4.7.1")
+    implementation ("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation ("com.github.bumptech.glide:okhttp3-integration:4.16.0")
 
     // RxJAVA2
 
@@ -100,8 +109,10 @@ dependencies {
 
     //MOCKITO
 
-    testImplementation ("org.mockito:mockito-core:2.19.0") //Mockito
+    testImplementation ("org.mockito:mockito-android:5.9.0")
     testImplementation ("androidx.test:core:1.5.0")//Robolectric
+    testImplementation ("net.bytebuddy:byte-buddy:1.14.11")
+
 
     //ESPRESSO
 

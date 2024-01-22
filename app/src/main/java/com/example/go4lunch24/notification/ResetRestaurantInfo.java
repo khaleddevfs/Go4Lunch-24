@@ -3,19 +3,20 @@ package com.example.go4lunch24.notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 
 import com.example.go4lunch24.models.WorkMate;
 import com.example.go4lunch24.repositories.WorkMatesRepository;
 import com.google.firebase.firestore.DocumentSnapshot;
 
-public class ResetRestaurantInfo  extends BroadcastReceiver {
+public class ResetRestaurantInfo extends BroadcastReceiver {
 
     private WorkMatesRepository workMatesRepository;
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        workMatesRepository = WorkMatesRepository.getINSTANCE();
-        this.deleteRestaurantInfo();
+        workMatesRepository = WorkMatesRepository.getInstance();
+        deleteRestaurantInfo();
     }
 
     private void deleteRestaurantInfo() {
@@ -28,5 +29,6 @@ public class ResetRestaurantInfo  extends BroadcastReceiver {
                         }
                     }
                 });
+
     }
 }

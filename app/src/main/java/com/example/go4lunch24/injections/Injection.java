@@ -13,7 +13,7 @@ public class Injection {
     }
 
     public static WorkMatesRepository provideWorkMateRepository() {
-        return WorkMatesRepository.getINSTANCE();
+        return WorkMatesRepository.getInstance();
     }
 
     public static SaveDataRepository provideSaveDataRepository() {

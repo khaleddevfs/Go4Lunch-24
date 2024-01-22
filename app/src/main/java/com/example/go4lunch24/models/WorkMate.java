@@ -1,21 +1,28 @@
 package com.example.go4lunch24.models;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class WorkMate {
-
+    @SerializedName("uid")
     private String uid;
+    @SerializedName("name")
     private String name;
-    @Nullable
+    @SerializedName("email")
+
     private String email;
-    @Nullable
+    @SerializedName("photoUrl")
+
     private String photoUrl;
-    @Nullable
+    @SerializedName("workMateRestaurantChoice")
+
     private WorkMateRestaurantChoice workMateRestaurantChoice;
-    @Nullable
+
     private List<String> likedRestaurants;
 
     public WorkMate(){
@@ -84,6 +91,7 @@ public class WorkMate {
     }
 
 
+    @NonNull
     @Override
     public String toString() {
         return "WorkMate{" +

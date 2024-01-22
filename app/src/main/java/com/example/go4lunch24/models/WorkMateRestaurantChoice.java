@@ -1,12 +1,20 @@
 package com.example.go4lunch24.models;
 
 import com.google.firebase.Timestamp;
+import com.google.gson.annotations.SerializedName;
 
 public class WorkMateRestaurantChoice {
 
+    @SerializedName("restaurantId")
     private String restaurantId;
+
+    @SerializedName("restaurantName")
     private String restaurantName;
+
+    @SerializedName("restaurantAddress")
     private String restaurantAddress;
+
+    @SerializedName("restaurantDateChoice")
     private Timestamp restaurantDateChoice;
 
     public WorkMateRestaurantChoice() {

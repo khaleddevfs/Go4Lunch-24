@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -18,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,9 +27,8 @@ public class NotificationLunchService extends BroadcastReceiver {
 
     private final String TAG = NotificationLunchService.class.getSimpleName();
 
-    private SaveDataRepository saveDataRepository;
-
     private WorkMatesRepository workMatesRepository;
+    private SaveDataRepository saveDataRepository;
 
     private String restaurantName;
     private String restaurantAddress;
@@ -37,21 +38,22 @@ public class NotificationLunchService extends BroadcastReceiver {
     private String currentUserId;
     private List<WorkMate> workMates;
 
-    private final int NOTIFICATION_ID = 001;
+    private final int NOTIFICATION_ID = 1;
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        Log.d("lodi", "onReceive done");
         this.context = context;
         this.configureRepositories();
+        Log.d("lodi", "Notification intent receive");
     }
 
     private void configureRepositories() {
-        workMatesRepository = WorkMatesRepository.getINSTANCE();
+        workMatesRepository = WorkMatesRepository.getInstance();
         saveDataRepository = SaveDataRepository.getInstance();
         saveDataRepository.configureContext(context);
         currentUserId = workMatesRepository.getActualUser().getUid();
-        if (saveDataRepository.getNotificationSettings(currentUserId)
-                && getCurrentUser() != null) {
+        if (saveDataRepository.getNotificationSettings(currentUserId) && getCurrentUser() != null) {
             this.fetchUsers();
         }
     }
@@ -62,7 +64,11 @@ public class NotificationLunchService extends BroadcastReceiver {
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots.getDocuments()) {
                         WorkMate workMate = documentSnapshot.toObject(WorkMate.class);
-                        if (workMate != null && workMate.getWorkMateRestaurantChoice().getRestaurantId() != null) {
+                        Log.d("lodi", "fetchUsers from firbase");
+                        assert workMate != null;
+                        if (workMate.getWorkMateRestaurantChoice() != null && workMate.getWorkMateRestaurantChoice().getRestaurantId() != null) {
+
+
                             if (workMate.getUid().equals(currentUserId)) {
                                 currentUser = workMate;
                             } else {
@@ -71,11 +77,14 @@ public class NotificationLunchService extends BroadcastReceiver {
                         }
                     }
                     fetchUsersGoing();
+                    Log.d("lodi", "fetchUsers");
                 });
     }
 
     private void fetchUsersGoing() {
+
         if (currentUser != null) {
+            Log.d("lodi", "users fetching");
             List<String> usersName = new ArrayList<>();
             for (WorkMate workMate : workMates) {
                 if (workMate.getWorkMateRestaurantChoice() != null && currentUser.getWorkMateRestaurantChoice() != null &&
@@ -84,14 +93,17 @@ public class NotificationLunchService extends BroadcastReceiver {
                 }
             }
             restaurantName = currentUser.getName();
+            assert currentUser.getWorkMateRestaurantChoice() != null;
             restaurantAddress = currentUser.getWorkMateRestaurantChoice().getRestaurantAddress();
             usersJoining = Utils.convertListToString(usersName);
             showNotification();
+            Log.d("lodi", "fetchUsersGoing");
         }
     }
 
     @Nullable
     private FirebaseUser getCurrentUser() {
+        Log.d("lodi", "from firebase done");
         return FirebaseAuth.getInstance().getCurrentUser();
     }
 
@@ -99,8 +111,11 @@ public class NotificationLunchService extends BroadcastReceiver {
     // SHOW NOTIFICATION
     // -------------------
 
-    @SuppressLint("MissingPermission")
+ @SuppressLint({"MissingPermission"})
     private void showNotification() {
+
+
+     Log.d("lodi", "show notis done");
         String channelId = context.getString(R.string.notificationChannel);
         String message;
         String messageBody;
@@ -120,7 +135,6 @@ public class NotificationLunchService extends BroadcastReceiver {
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(messageBody));
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
         notificationManagerCompat.notify(NOTIFICATION_ID, builder.build());
+     Log.d("lodi", "show notifications");
     }
-
-
 }
